@@ -18,6 +18,16 @@ export default {
     },
     extend: {
       colors: {
+        ////our clors start
+        darkColor: "#151515",
+        lightColor: "#52525b",
+        lightOrange: "#fca99b",
+        lightBlue: "#7688DB",
+        darkBlue: "#6c7fd8",
+        darkText: "#686e7d",
+        lightBg: "#F8F8FB",
+
+        // our cloros end
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
