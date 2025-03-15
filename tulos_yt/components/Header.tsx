@@ -9,8 +9,12 @@ const Header = () => {
     <header className="border-b border-b-gray-400 py-5">
 <Container className="flex items-center justify-between gap-7 text-lightColor">
 <HeaderMenu />
-      <Logo />
-      <div>right</div>
+      <div className="w-auto md:w-1/3 flex items-center justify-center">
+      <Logo>Tulos</Logo>
+      </div>
+      <div className="w-auto md:w-1/3 flex items-center justify-between gap-5">
+      right
+      </div>
      </Container>
     </header>
   );
