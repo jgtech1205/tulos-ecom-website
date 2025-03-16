@@ -4,7 +4,8 @@ import Logo from "./Logo";
 import Container from "./Container";
 import { cn } from "@/lib/utils";
 import MobileMenu from "./MobileMenu";
-
+import SearchBar from "./SearchBar";
+import CartIcon from "./CartIcon";
 const Header = () => {
   return (
     <header className="border-b border-b-gray-400 py-5">
@@ -14,8 +15,9 @@ const Header = () => {
       <MobileMenu />
       <Logo>Tulos</Logo>
       </div>
-      <div className="w-auto md:w-1/3 flex items-center justify-between gap-5">
-      right
+      <div className="w-auto md:w-1/3 flex items-center justify-end gap-5">
+      <SearchBar />
+      <CartIcon/>
       </div>
      </Container>
     </header>
