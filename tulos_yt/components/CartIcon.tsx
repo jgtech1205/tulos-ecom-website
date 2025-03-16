@@ -10,6 +10,7 @@ const CartIcon = () => {
           <span className="absolute -top-1 -right-1 bg-darkColor 
               text-white h-3.5 w-3.5 rounded-full text-xs 
               font-semibold flex items-center justify-center">
+                0
           </span>
       </Link>
   );
