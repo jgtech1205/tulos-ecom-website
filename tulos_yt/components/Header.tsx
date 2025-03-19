@@ -1,4 +1,6 @@
-import React from "react";
+"use client"; // Ensures this runs on the client side
+
+import React, { useEffect, useState } from "react";
 import HeaderMenu from "./HeaderMenu";
 import Logo from "./Logo";
 import Container from "./Container";
@@ -6,13 +8,13 @@ import { cn } from "@/lib/utils";
 import MobileMenu from "./MobileMenu";
 import SearchBar from "./SearchBar";
 import CartIcon from "./CartIcon";
-import { currentUser } from "@clerk/nextjs/server";
-import { ClerkLoaded, SignedIn, SignInButton, UserButton } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs"; // `useUser` is better for client-side auth
+import { ClerkLoaded, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { ListOrdered } from "lucide-react";
 
-const Header = async () => {
-    const user = await currentUser();
+const Header = () => {
+    const { isSignedIn, user } = useUser(); // Client-side user check
 
     return (
         <header className="border-b border-b-gray-400 py-5">
@@ -36,16 +38,16 @@ const Header = async () => {
                                     0
                                 </span>
                             </Link>
-                            <UserButton/>
+                            <UserButton />
                         </SignedIn>
 
-                        {!user && (
+                        <SignedOut>
                             <SignInButton>
                                 <button className="text-sm font-semibold hover:text-darkColor hoverEffect">
                                     Login
                                 </button>
                             </SignInButton>
-                        )}
+                        </SignedOut>
                     </ClerkLoaded>
                 </div>
             </Container>
@@ -54,3 +56,4 @@ const Header = async () => {
 };
 
 export default Header;
+
