@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import MobileMenu from "./MobileMenu";
 import SearchBar from "./SearchBar";
 import CartIcon from "./CartIcon";
-import { useUser } from "@clerk/nextjs"; // `useUser` is better for client-side auth
+import { useUser } from "@clerk/nextjs"; 
 import { ClerkLoaded, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { ListOrdered } from "lucide-react";

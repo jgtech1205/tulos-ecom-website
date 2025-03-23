@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
 
-const HomeTabbar = () => {
-  return (
-    <div>HomeTabbar</div>
-  )
+interface Props {
+  selectedTab: string;
+  onTabSelect: (tab: string) => void;
 }
 
-export default HomeTabbar
+const HomeTabbar = () => {
+  return <div>HomeTabbar</div>;
+};
+
+export default HomeTabbar;
