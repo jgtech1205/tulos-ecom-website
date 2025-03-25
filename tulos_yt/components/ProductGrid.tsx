@@ -40,11 +40,20 @@ const ProductGrid = () => {
           <span>Product is loading...</span>
         </div>
       ) : (
-        products?.map((product: Product) => (
-          <div key={product?._id}>
-            <ProductCard product={product} />
-          </div>
-        ))
+        <>
+        {products?.length ? (
+  <div className="girdgird-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-10">
+    {products?.map((product: Product) => (
+      <div key={product?._id}>
+        <ProductCard product={product} />
+      </div>
+    ))}
+  </div>
+) : (
+  <p>No products</p>
+)}
+
+        </>
       )}
     </div>
   );
