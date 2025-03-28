@@ -33,7 +33,7 @@ const ProductCharacteristics = ({ product }: { product: Product }) => {
             <span className="font-semibold tracking-wide">
               {product?.intro}
             </span>
-          </p>
+          </p> 
         </AccordionContent>  
       </AccordionItem>
     </Accordion>
