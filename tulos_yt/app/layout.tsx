@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import {ClerkProvider} from '@clerk/nextjs'
-import localFont from 'next/font/local'
+import { ClerkProvider } from "@clerk/nextjs";
+import localFont from "next/font/local";
+import { Toaster } from "react-hot-toast";
 
 const raleway = localFont({
   src: "./fonts/Raleway.woff2",
@@ -11,10 +12,9 @@ const raleway = localFont({
   weight: "100 900",
 });
 
-
 export const metadata: Metadata = {
-  title: "Ecommerce app for shoppers",
-  description: "Ecommerce app",
+  title: "Tulos Ecommerce app for shoppers",
+  description: "An Ecommerce app for education purposes",
 };
 
 export default function RootLayout({
@@ -24,15 +24,22 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-    <html lang="en">
-      <body
-        className={`${raleway.variable} antialiased`}
-      >
-        <Header />
-        {children}
-        <Footer />
-      </body>
-    </html>
+      <html lang="en">
+        <body className={`${raleway.variable} antialiased`}>
+          <Header />
+          {children}
+          <Footer />
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                background: "#000000",
+                color: "#ffffff",
+              },
+            }}
+          />
+        </body>
+      </html>
     </ClerkProvider>
   );
 }

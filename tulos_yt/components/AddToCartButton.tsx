@@ -1,22 +1,21 @@
 "use client";
 import { Product } from "@/sanity.types";
 import React from "react";
-import { toast, ToastClassnames } from "sonner";
+import toast from "react-hot-toast";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import QuantityButtons from "./QuantityButtons";
 import PriceFormatter from "./PriceFormatter";
-// import useCartStore from "@/store";
+import useCartStore from "@/store";
 interface Props {
   product: Product;
   className?: string;
 }
 
 const AddToCartButton = ({ product, className }: Props) => {
- // const { addItem, getItemCount } = useCartStore();
-  //const itemCount = getItemCount(product?._id);
+  const { addItem, getItemCount } = useCartStore();
+  const itemCount = getItemCount(product?._id);
   const isOutOfStock = product?.stock === 0;
-  const itemCount = 4;
 
   return (
     <div className="w-full h-12 flex items-center">
