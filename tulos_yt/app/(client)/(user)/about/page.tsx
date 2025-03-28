@@ -7,7 +7,7 @@ const AboutPage = () => {
       <h1 className="text-3xl font-bold mb-6">About Tulos</h1>
       <p className="mb-4">
         Tulos is a cutting-edge technology company dedicated to providing
-        innovative solutions for modern businesses. Founded in 2020, we&apos;ve
+        innovative solutions for modern businesses. Founded in 2024, we&apos;ve
         quickly established ourselves as a leader in digital transformation and
         software development.
       </p>
