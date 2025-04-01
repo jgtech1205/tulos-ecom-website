@@ -1,56 +1,75 @@
 "use client";
+
+import React from "react";
 import { CATEGORIES_QUERYResult } from "@/sanity.types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import { headerData } from "@/constants";
 
 const HeaderMenu = ({ categories }: { categories: CATEGORIES_QUERYResult }) => {
   const pathname = usePathname();
 
+  const baseLinkClasses = "hover:text-darkColor hoverEffect relative group";
+  const underlineClasses = "absolute -bottom-0.5 h-0.5 bg-darkColor hoverEffect";
+
+  // Titles from headerData to filter out from categories
+  const staticTitles = headerData.map((item) => item.title.trim().toLowerCase());
+
+  const filteredCategories = categories?.filter((category) => {
+    const title = category?.title?.trim().toLowerCase();
+    return title && !staticTitles.includes(title);
+  });
+
   return (
     <div className="hidden md:inline-flex w-1/3 items-center gap-5 text-sm capitalize font-semibold">
-      <Link
-        href={"/"}
-        className={`hover:text-darkColor hoverEffect relative group ${
-          pathname === "/" && "text-darkColor"
-        }`}
-      >
-        Home
-        <span
-          className={`absolute -bottom-0.5 left-1/2 w-0 h-0.5 bg-darkColor hoverEffect group-hover:w-1/2 group-hover:left-0 ${
-            pathname === "/" && "w-1/2"
-          }`}
-        />
-        <span
-          className={`absolute -bottom-0.5 right-1/2 w-0 h-0.5 bg-darkColor hoverEffect group-hover:w-1/2 group-hover:right-0 ${
-            pathname === "/" && "w-1/2"
-          }`}
-        />
-      </Link>
-      {categories?.map((category) => (
+      {/* Static links */}
+      {headerData.map((item) => (
         <Link
-          key={category?._id}
-          href={`/category/${category?.slug?.current}`}
-          className={`hover:text-darkColor hoverEffect relative group ${
-            pathname === `/category/${category?.slug?.current}` &&
-            "text-darkColor"
-          }`}
+          key={item.title}
+          href={item.href}
+          className={`${baseLinkClasses} ${pathname === item.href ? "text-darkColor" : ""}`}
         >
-          {category?.title}
+          <span className="whitespace-nowrap">{item.title}</span>
           <span
-            className={`absolute -bottom-0.5 left-1/2 w-0 h-0.5 bg-darkColor hoverEffect group-hover:w-1/2 group-hover:left-0 ${
-              pathname === `/category/${category?.slug?.current}` && "w-1/2"
+            className={`${underlineClasses} left-1/2 w-0 group-hover:w-1/2 group-hover:left-0 ${
+              pathname === item.href ? "w-1/2 left-0" : ""
             }`}
           />
           <span
-            className={`absolute -bottom-0.5 right-1/2 w-0 h-0.5 bg-darkColor hoverEffect group-hover:w-1/2 group-hover:right-0 ${
-              pathname === `/category/${category?.slug?.current}` && "w-1/2"
+            className={`${underlineClasses} right-1/2 w-0 group-hover:w-1/2 group-hover:right-0 ${
+              pathname === item.href ? "w-1/2 right-0" : ""
             }`}
           />
         </Link>
       ))}
+
+      {/* Dynamic categories (filtered) */}
+      {filteredCategories?.map((category) => {
+        const slug = `/category/${category?.slug?.current}`;
+        return (
+          <Link
+            key={category?._id}
+            href={slug}
+            className={`${baseLinkClasses} ${pathname === slug ? "text-darkColor" : ""}`}
+          >
+            <span className="whitespace-nowrap">{category?.title}</span>
+            <span
+              className={`${underlineClasses} left-1/2 w-0 group-hover:w-1/2 group-hover:left-0 ${
+                pathname === slug ? "w-1/2 left-0" : ""
+              }`}
+            />
+            <span
+              className={`${underlineClasses} right-1/2 w-0 group-hover:w-1/2 group-hover:right-0 ${
+                pathname === slug ? "w-1/2 right-0" : ""
+              }`}
+            />
+          </Link>
+        );
+      })}
     </div>
   );
 };
 
 export default HeaderMenu;
+
+

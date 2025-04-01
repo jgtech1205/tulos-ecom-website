@@ -14,6 +14,7 @@ import {
 import { notFound } from "next/navigation";
 import React from "react";
 
+
 const SingleProductPage = async ({
   params,
 }: {

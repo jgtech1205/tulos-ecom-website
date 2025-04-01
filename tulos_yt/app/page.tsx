@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import HomeBanner from "@/components/HomeBanner";
 import ProductGrid from "@/components/ProductGrid";
 
+
 export default function Home() {
   return (
    <div>
