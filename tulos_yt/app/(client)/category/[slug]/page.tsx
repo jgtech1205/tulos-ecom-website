@@ -1,4 +1,4 @@
-import CategoryProducts from "@/components/CategoryProduct";
+import CategoryProducts from "@/components/CategorySidebarMenu";
 import Container from "@/components/Container";
 import Title from "@/components/Title";
 import { getAllCategories } from "@/sanity/helpers/queries";
@@ -7,9 +7,9 @@ import React from "react";
 const CategoryPage = async ({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) => {
-  const { slug } = params;
+  const { slug } = await params;
   const categories = await getAllCategories();
 
   return (

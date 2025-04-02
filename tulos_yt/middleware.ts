@@ -4,6 +4,7 @@ export default clerkMiddleware();
 
 export const config = {
   matcher: [
-    "/((?!_next|studio|.*\\..*).*)", // Exclude `/studio` from Clerk middleware
+    // Protect all routes *except* these:
+    "/((?!_next|.*\\..*|studio|favicon.ico|fonts).*)",
   ],
 };
