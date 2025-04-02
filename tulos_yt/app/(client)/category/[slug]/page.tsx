@@ -1,9 +1,28 @@
-import React from 'react'
+import CategoryProducts from "@/components/CategoryProduct";
+import Container from "@/components/Container";
+import Title from "@/components/Title";
+import { getAllCategories } from "@/sanity/helpers/queries";
+import React from "react";
 
-const CategoryPage = () => {
+const CategoryPage = async ({
+  params,
+}: {
+  params: { slug: string };
+}) => {
+  const { slug } = params;
+  const categories = await getAllCategories();
+
   return (
-    <div>CategoryPage</div>
-  )
-}
+    <Container className="py-10">
+      <Title className="text-xl">
+        Products by Category{" "}
+        <span className="font-bold text-green-600 capitalize tracking-wide">
+          {slug}
+        </span>
+      </Title>
+      <CategoryProducts categories={categories} slug={slug} />
+    </Container>
+  );
+};
 
-export default CategoryPage
+export default CategoryPage;
