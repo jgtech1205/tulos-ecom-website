@@ -1,7 +1,12 @@
-
 "use client";
 
-import { ClerkLoaded, SignedIn, SignInButton, UserButton } from "@clerk/nextjs";
+import {
+  ClerkLoaded,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/nextjs";
 import Link from "next/link";
 import { ListOrdered } from "lucide-react";
 
@@ -22,15 +27,16 @@ const ClientAuthUI = ({ orderCount }: Props) => {
         <UserButton />
       </SignedIn>
 
-      <SignedIn>
+      <SignedOut>
         <SignInButton mode="modal">
           <button className="text-sm font-semibold hover:text-darkColor hoverEffect">
             Login
           </button>
         </SignInButton>
-      </SignedIn>
+      </SignedOut>
     </ClerkLoaded>
   );
 };
 
 export default ClientAuthUI;
+
