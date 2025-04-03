@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ClerkLoaded,
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-} from "@clerk/nextjs";
+import { ClerkLoaded, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { ListOrdered } from "lucide-react";
 
@@ -38,5 +32,9 @@ const ClientAuthUI = ({ orderCount }: Props) => {
   );
 };
 
+<<<<<<< HEAD
 export default ClientAuthUI;
 
+=======
+export default ClientAuthUI;
+>>>>>>> 83cdf3f (updated cartPage)
