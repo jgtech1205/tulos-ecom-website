@@ -32,9 +32,5 @@ const ClientAuthUI = ({ orderCount }: Props) => {
   );
 };
 
-<<<<<<< HEAD
 export default ClientAuthUI;
 
-=======
-export default ClientAuthUI;
->>>>>>> 83cdf3f (updated cartPage)
