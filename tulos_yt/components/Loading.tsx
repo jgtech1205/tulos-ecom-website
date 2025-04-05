@@ -1,4 +1,4 @@
-import React from "react";
+'use client';
 import Logo from "./Logo";
 import { motion } from "motion/react";
 import { Loader2 } from "lucide-react";
