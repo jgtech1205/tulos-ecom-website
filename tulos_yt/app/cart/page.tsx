@@ -22,10 +22,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import paypalLogo from "@/images/paypalLogo.png";
-//import {
- // createCheckoutSession,
-  //Metadata,
-//} from "@/actions/createCheckoutSession";
+import {
+  createCheckoutSession, Metadata
+} from "@/actions/createCheckoutSession";
 
 const CartPage = () => {
   const [isClient, setIsClient] = useState(false);
