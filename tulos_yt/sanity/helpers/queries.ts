@@ -38,13 +38,15 @@ export const getMyOrders = async (userId: string) => {
   if (!userId) {
     throw new Error("User ID is required");
   }
-  const MY_ORDERS_QUERY =
-    defineQuery(`*[_type == 'order' && clerkUserId == $userId] | order(orderData desc){
-    ...,products[]{
-      ...,product->
+  const MY_ORDERS_QUERY = defineQuery(`*[_type == 'order' && clerkUserId == $userId] | order(orderData desc) {
+    ..., products[]{
+      ..., product->
     }
   }`);
-
+  // Log the query and parameters
+  console.log("Query:", MY_ORDERS_QUERY);
+  console.log("Params:", { userId });
+  // Fetch orders
   try {
     const orders = await sanityFetch({
       query: MY_ORDERS_QUERY,

@@ -1,9 +1,12 @@
 // middleware.ts
 import { clerkMiddleware } from "@clerk/nextjs/server";
 
-export default clerkMiddleware();
-
-// You MUST export a matcher that includes /studio
+export default clerkMiddleware((auth, req) => {
+  console.log("✅ Clerk middleware triggered on:", req.nextUrl.pathname);
+});
 export const config = {
-  matcher: ["/((?!_next|.*\\..*).*)"], // This includes all routes
+  matcher: [
+    "/((?!api|_next|.*\\..*).*)", // excludes ALL api routes
+    "/studio/:path*"
+  ],
 };
