@@ -10,10 +10,9 @@ import {
 } from "./ui/tooltip";
 import { format } from "date-fns";
 import PriceFormatter from "./PriceFormatter";
-import { Order } from "@/sanity.types";
+
 import OrderDetailsDialog from "./OrdersDetailsDialog";
 const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERYResult }) => {
-  console.log("Orders in OrdersComponent:", orders);
   const [selectedOrder, setSelectedOrder] = useState<
     MY_ORDERS_QUERYResult[number] | null
   >(null);
@@ -25,7 +24,7 @@ const OrdersComponent = ({ orders }: { orders: MY_ORDERS_QUERYResult }) => {
           {orders?.map((order) => (
             <Tooltip key={order?.orderNumber}>
               <TooltipTrigger asChild>
-                <TableRow   
+                <TableRow
                   className=" cursor-pointer hover:bg-gray-100 h-12"
                   onClick={() => setSelectedOrder(order)}
                 >

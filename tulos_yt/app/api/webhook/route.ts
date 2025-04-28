@@ -1,146 +1,81 @@
-import { Metadata } from "@/actions/createCheckoutSession";
-import stripe from "@/lib/stripe";
 import { backendClient } from "@/sanity/lib/backendClient";
-import { headers } from "next/headers";
+import stripe from "@/lib/stripe";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
+interface SessionMetadata {
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  clerkUserId: string;
+}
+
 export async function POST(req: NextRequest) {
-  console.log("📬 Incoming webhook hit");
-
   const body = await req.text();
-  const headersList = await headers();
-  const sig = headersList.get("stripe-signature");
-
-  console.log("🔥 Stripe webhook hit");
-  console.log("🧾 stripe-signature:", sig);
-  console.log("✅ STRIPE_WEBHOOK_SECRET present:", !!process.env.STRIPE_WEBHOOK_SECRET);
-
+  const sig = req.headers.get("stripe-signature");
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
   if (!sig || !webhookSecret) {
-    console.error("❌ Missing required Stripe secret or signature");
-    return NextResponse.json(
-      { error: "Missing Stripe signature or webhook secret" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Missing Stripe secret or signature" }, { status: 400 });
   }
 
   let event: Stripe.Event;
+
   try {
     event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
   } catch (err) {
-    console.error("❌ Webhook verification failed:", err);
-    return NextResponse.json(
-      { error: `Webhook Error: ${err instanceof Error ? err.message : "Unknown error"}` },
-      { status: 400 }
-    );
+    console.error("Webhook verification failed:", err);
+    return NextResponse.json({ error: "Invalid webhook signature" }, { status: 400 });
   }
-
-  console.log(`✅ Stripe event received: ${event.type} [${event.id}]`);
-  console.log("📦 Full event object:", JSON.stringify(event, null, 2));
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
-    console.log("🧪 Metadata from session:", session.metadata);
-    const invoice = session.invoice
-      ? await stripe.invoices.retrieve(session.invoice as string)
-      : null;
+    const metadata = session.metadata as unknown as SessionMetadata;
 
-    console.log("📄 Session object:", JSON.stringify(session, null, 2));
-    console.log("🧪 Metadata from session:", session.metadata);
+    if (!metadata?.orderNumber || !metadata.customerEmail || !metadata.clerkUserId) {
+      console.warn("⚠️ Missing metadata, skipping order creation");
+      return NextResponse.json({ received: true });
+    }
+
+    const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+      expand: ["data.price.product"],
+    });
+
+    const sanityProducts = lineItems.data.map((item) => ({
+      _key: crypto.randomUUID(),
+      quantity: item.quantity || 1,
+      product: {
+        _type: "reference",
+        _ref: (item.price?.product as Stripe.Product)?.metadata?.id,
+      },
+    }));
+
+    const order = {
+      _type: "order",
+      orderNumber: metadata.orderNumber,
+      stripeCheckoutSessionId: session.id,
+      stripePaymentIntentId: session.payment_intent,
+      customerName: metadata.customerName,
+      email: metadata.customerEmail,
+      clerkUserId: metadata.clerkUserId,
+      status: "paid",
+      currency: session.currency,
+      amountDiscount: session.total_details?.amount_discount
+        ? session.total_details.amount_discount / 100
+        : 0,
+      totalPrice: session.amount_total ? session.amount_total / 100 : 0,
+      orderDate: new Date().toISOString(),
+      products: sanityProducts,
+    };
 
     try {
-      await createOrderInsanity(session, invoice);
-    } catch (err) {
-      console.error("❌ Error creating order in Sanity:", err);
-      return NextResponse.json({ error: "Order creation failed" }, { status: 500 });
+      const created = await backendClient.create(order);
+      console.log("Order saved to Sanity:", created);
+    } catch (error) {
+      console.error(" Error saving order to Sanity:", error);
+      return NextResponse.json({ error: "Failed to create order" }, { status: 500 });
     }
   }
 
   return NextResponse.json({ received: true });
-}
-
-async function createOrderInsanity(
-  session: Stripe.Checkout.Session,
-  invoice: Stripe.Invoice | null
-) {
-  const {
-    id,
-    amount_total,
-    currency,
-    metadata,
-    payment_intent,
-    total_details,
-  } = session;
-
-  if (!metadata || typeof metadata !== "object") {
-    console.warn("⚠️ Metadata missing or malformed:", metadata);
-    return;
-  }
-
-  const orderNumber = metadata.orderNumber || "";
-  const customerName = metadata.customerName || "";
-  const customerEmail = metadata.customerEmail || "";
-  const clerkUserId = metadata.clerkUserId || "";
-
-  if (!orderNumber || !customerName || !customerEmail || !clerkUserId) {
-    console.warn("⚠️ Skipping order creation: test mode or incomplete metadata", {
-      orderNumber,
-      customerName,
-      customerEmail,
-      clerkUserId,
-    });
-    return;
-  }
-
-  const lineItems = await stripe.checkout.sessions.listLineItems(id, {
-    expand: ["data.price.product"],
-  });
-
-  const sanityProducts = lineItems.data.map((item) => ({
-    _key: crypto.randomUUID(),
-    product: {
-      _type: "reference",
-      _ref: (item.price?.product as Stripe.Product)?.metadata?.id,
-    },
-    quantity: item.quantity || 0,
-  }));
-
-  const order = {
-    _type: "order",
-    orderNumber,
-    stripeCheckoutSessionId: id,
-    stripePaymentIntentId: payment_intent,
-    customerName,
-    stripeCustomerId: customerEmail,
-    clerkUserId,
-    email: customerEmail,
-    currency,
-    amountDiscount: total_details?.amount_discount
-      ? total_details.amount_discount / 100
-      : 0,
-    products: sanityProducts,
-    totalPrice: amount_total ? amount_total / 100 : 0,
-    status: "paid",
-    orderDate: new Date().toISOString(),
-    invoice: invoice
-      ? {
-          id: invoice.id,
-          number: invoice.number,
-          hosted_invoice_url: invoice.hosted_invoice_url,
-        }
-      : null,
-  };
-
-  console.log("📦 Final order payload to Sanity:", order);
-  console.log("🔐 SANITY_API_TOKEN present:", !!process.env.SANITY_API_TOKEN);
-
-  try {
-    const createdOrder = await backendClient.create(order);
-    console.log("✅ Order successfully created in Sanity:", createdOrder);
-    return createdOrder;
-  } catch (err) {
-    console.error("❌ Failed to create order in Sanity:", err);
-    throw err;
-  }
 }

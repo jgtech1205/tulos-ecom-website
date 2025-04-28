@@ -16,7 +16,7 @@ const data: Props[] = [
   },
   {
     title: "Call Us",
-    subtitle: "+12 958 648 597",
+    subtitle: "+1 234 567 1890",
     icon: (
       <Phone className="text-gray-600 group-hover:text-darkColor transition-colors" />
     ),

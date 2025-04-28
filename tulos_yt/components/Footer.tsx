@@ -16,8 +16,8 @@ const Footer = () => {
           <div className="space-y-4">
             <Logo>Tulos</Logo>
             <p className="text-gray-600 text-sm">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem ex ad
-              at vitae esse. Vero fuga laborum disti.
+            Tulos is your trusted destination for premium gear and everyday essentials. 
+            We deliver quality products, exceptional service, and fast shipping to help you live your best life.
             </p>
             <SocialMedia
               className="text-darkColor/60"

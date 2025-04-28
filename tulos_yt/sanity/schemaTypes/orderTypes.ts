@@ -1,10 +1,11 @@
-import { BasketIcon } from "@sanity/icons";
+// import { BasketIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const orderType = defineType({
   name: "order",
   title: "Order",
   type: "document",
+  // icon: BasketIcon,
   fields: [
     defineField({
       name: "orderNumber",
@@ -113,17 +114,33 @@ export const orderType = defineType({
       type: "number",
       validation: (Rule) => Rule.required(),
     }),
+
     defineField({
       name: "status",
       title: "Order Status",
       type: "string",
       options: {
         list: [
-          { title: "Pending", value: "pending" },
-          { title: "Paid", value: "paid" },
-          { title: "Shipped", value: "shipped" },
-          { title: "Delivered", value: "delivered" },
-          { title: "Cancelled", value: "cancelled" },
+          {
+            title: "Pending",
+            value: "pending",
+          },
+          {
+            title: "Paid",
+            value: "paid",
+          },
+          {
+            title: "Shipped",
+            value: "shipped",
+          },
+          {
+            title: "Delivered",
+            value: "delivered",
+          },
+          {
+            title: "Cancelled",
+            value: "cancelled",
+          },
         ],
       },
     }),
@@ -143,14 +160,11 @@ export const orderType = defineType({
       email: "email",
     },
     prepare(select) {
-      const orderIdSnippet = select.orderId
-        ? `${select.orderId.slice(0, 5)}...${select.orderId.slice(-5)}`
-        : "No Order ID";
-
+      const orderIdSnippet = `${select.orderId.slice(0, 5)}...${select.orderId.slice(-5)}`;
       return {
-        title: `${select.name ?? "Unknown"} (${orderIdSnippet})`,
-        subtitle: `${select.amount ?? "?"} ${select.currency ?? ""}, ${select.email ?? "No Email"}`,
-        media: BasketIcon,
+        title: `${select.name} (${orderIdSnippet})`,
+        subtitle: `${select.amount} ${select.currency}, ${select.email}`,
+        // media: BasketIcon,
       };
     },
   },
