@@ -14,49 +14,40 @@ export interface Metadata {
 
 export async function createCheckoutSession(items: CartItem[], metadata: Metadata) {
   try {
-    // Validate items first
-    if (!items || items.length === 0) {
-      throw new Error("Cart cannot be empty");
-    }
-
     const customers = await stripe.customers.list({
       email: metadata.customerEmail,
       limit: 1,
     });
 
-    const customerId = customers.data[0]?.id;
+    const customerId = customers.data.length > 0 ? customers.data[0].id : undefined;
 
     const sessionPayload: Stripe.Checkout.SessionCreateParams = {
       mode: "payment",
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cart`,
       payment_method_types: ["card"],
-      metadata: { ...metadata },
-      payment_intent_data: { metadata: { ...metadata } },
-      line_items: items.map((item) => {
-        // Ensure required fields exist
-        if (!item.product.name) {
-          throw new Error(`Product ${item.product._id} is missing a name`);
-        }
-        if (!item.product.price) {
-          throw new Error(`Product ${item.product._id} is missing a price`);
-        }
-
-        return {
-          quantity: item.quantity,
-          price_data: {
-            currency: "usd",
-            unit_amount: Math.round(item.product.price * 100),
-            product_data: {
-              name: item.product.name, // Now guaranteed to be string
-              metadata: { id: item.product._id },
-              ...(item.product.images?.length && {
-                images: [urlFor(item.product.images[0]).url()],
-              }),
-            },
+      metadata: {
+        ...metadata,
+      },
+      payment_intent_data: {
+        metadata: {
+          ...metadata,
+        },
+      },
+      line_items: items.map((item) => ({
+        quantity: item.quantity,
+        price_data: {
+          currency: "usd",
+          unit_amount: Math.round(item.product.price! * 100),
+          product_data: {
+            name: item.product.name || "Unnamed Product", 
+            metadata: { id: item.product._id },
+            ...(item.product.images?.length && {
+              images: [urlFor(item.product.images[0]).url()],
+            }),
           },
-        };
-      }),
+        },
+      })),
     };
 
     if (customerId) {
@@ -69,6 +60,6 @@ export async function createCheckoutSession(items: CartItem[], metadata: Metadat
     return session.url;
   } catch (error) {
     console.error("Stripe Checkout error:", error);
-    throw error instanceof Error ? error : new Error("Checkout failed");
+    throw error;
   }
 }
