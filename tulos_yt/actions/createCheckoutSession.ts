@@ -34,20 +34,26 @@ export async function createCheckoutSession(items: CartItem[], metadata: Metadat
           ...metadata,
         },
       },
-      line_items: items.map((item) => ({
-        quantity: item.quantity,
-        price_data: {
-          currency: "usd",
-          unit_amount: Math.round(item.product.price! * 100),
-          product_data: {
-            name: item.product.name,
-            metadata: { id: item.product._id },
-            ...(item.product.images?.length && {
-              images: [urlFor(item.product.images[0]).url()],
-            }),
+      line_items: items.map((item) => {
+        if (!item.product.name) {
+          throw new Error(`Product name is required for product ID: ${item.product._id}`);
+        }
+
+        return {
+          quantity: item.quantity,
+          price_data: {
+            currency: "usd",
+            unit_amount: Math.round(item.product.price! * 100),
+            product_data: {
+              name: item.product.name, // Now guaranteed to be a string
+              metadata: { id: item.product._id },
+              ...(item.product.images?.length && {
+                images: [urlFor(item.product.images[0]).url()],
+              }),
+            },
           },
-        },
-      })),
+        };
+      }),
     };
 
     if (customerId) {
