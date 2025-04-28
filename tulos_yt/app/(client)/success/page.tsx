@@ -21,7 +21,7 @@ const SuccessPage = () => {
     } else {
       resetCart();
     }
-  }, [orderNumber, sessionId, resetCart]);
+  }, [orderNumber, sessionId, resetCart, router]);
 
   return (
     <div className="py-10 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
