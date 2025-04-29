@@ -1,19 +1,30 @@
 // middleware.ts
-import { withClerkMiddleware } from "@clerk/nextjs";
+import { authMiddleware } from "@clerk/nextjs/edge";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Wrap middleware with Clerk to enforce auth
+// Optional custom logic (logging)
 const clerkMiddleware = (req: NextRequest) => {
   console.log("Clerk middleware triggered:", req.nextUrl.pathname);
   return NextResponse.next();
 };
 
-export default withClerkMiddleware(clerkMiddleware);
-
-export const config = {
-  matcher: [
-    // Allow public access to specific paths and exclude static/API files
-    "/((?!_next|.*\\..*|api|about|contact|faqs|privacy|terms|category|product|$).*)",
+// Export wrapped middleware
+export default authMiddleware({
+  beforeAuth: clerkMiddleware, // Optional hook for pre-auth logging
+  publicRoutes: [
+    "/",
+    "/about",
+    "/contact",
+    "/faqs",
+    "/privacy",
+    "/terms",
+    "/category/:slug",
+    "/product/:slug",
   ],
+});
+
+// Specify which paths to apply the middleware
+export const config = {
+  matcher: ["/((?!_next|.*\\..*|api).*)"],
 };
