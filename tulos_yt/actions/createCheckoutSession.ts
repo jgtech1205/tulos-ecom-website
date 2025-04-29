@@ -40,7 +40,7 @@ export async function createCheckoutSession(items: CartItem[], metadata: Metadat
           currency: "usd",
           unit_amount: Math.round(item.product.price! * 100),
           product_data: {
-            name: item.product.name || "Unnamed Product", // Fallback added here
+            name: item.product.name || "Unnamed Product", // Fixed here
             metadata: { id: item.product._id },
             ...(item.product.images?.length && {
               images: [urlFor(item.product.images[0]).url()],
@@ -59,7 +59,7 @@ export async function createCheckoutSession(items: CartItem[], metadata: Metadat
     const session = await stripe.checkout.sessions.create(sessionPayload);
     return session.url;
   } catch (error) {
-    console.error("\u274C Stripe Checkout error:", error);
+    console.error("❌ Stripe Checkout error:", error);
     throw error;
   }
 }
