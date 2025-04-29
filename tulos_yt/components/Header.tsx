@@ -5,13 +5,13 @@ import Container from "./Container";
 import MobileMenu from "./MobileMenu";
 import SearchBar from "./SearchBar";
 import CartIcon from "./CartIcon";
-import { auth } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server"; // Updated import
 import { getAllCategories, getMyOrders } from "@/sanity/helpers/queries";
 import ClientAuthUI from "./ClientAuthUI";
 import { headers } from "next/headers";
 
 const Header = async () => {
-  const headersList = await headers(); // Need to await
+  const headersList = await headers();
   const pathname = headersList.get("x-next-pathname") || "";
   const isStudio = pathname.startsWith("/studio");
 
@@ -21,12 +21,12 @@ const Header = async () => {
 
   if (!isStudio) {
     try {
-      const { userId } = await auth();
-      if (userId) {
-        orders = await getMyOrders(userId);
+      const user = await currentUser(); // Updated auth method
+      if (user?.id) {
+        orders = await getMyOrders(user.id);
       }
     } catch (error) {
-      console.error(" Clerk auth or order fetch failed:", error);
+      console.error("Clerk auth or order fetch failed:", error);
     }
   }
 

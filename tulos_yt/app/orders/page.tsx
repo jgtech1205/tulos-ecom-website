@@ -1,4 +1,4 @@
-import Container from "@/components/Container"; 
+import Container from "@/components/Container";
 import OrdersComponent from "@/components/OrdersComponent";
 import Title from "@/components/Title";
 import { Button } from "@/components/ui/button";
@@ -6,14 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getMyOrders } from "@/sanity/helpers/queries";
-import { auth } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server"; // Updated import
 import { FileX } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 
 const OrdersPage = async () => {
-  const { userId } = await auth();
+  const user = await currentUser(); // Updated auth method
+  const userId = user?.id;
   console.log("User ID:", userId);
   
   if (!userId) {
