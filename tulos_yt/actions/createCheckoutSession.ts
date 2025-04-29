@@ -34,20 +34,23 @@ export async function createCheckoutSession(items: CartItem[], metadata: Metadat
           ...metadata,
         },
       },
-      line_items: items.map((item) => ({
-        quantity: item.quantity,
-        price_data: {
-          currency: "usd",
-          unit_amount: Math.round(item.product.price! * 100),
-          product_data: {
-            name: item.product.name ?? "Unnamed Product", // ✅ Now TypeScript is happy
-            metadata: { id: item.product._id },
-            ...(item.product.images?.length
-              ? { images: [urlFor(item.product.images[0]).url()] }
-              : {}),
+      line_items: items.map((item) => {
+        const productName = item.product.name || "Unnamed Product";
+        return {
+          quantity: item.quantity,
+          price_data: {
+            currency: "usd",
+            unit_amount: Math.round(item.product.price! * 100),
+            product_data: {
+              name: productName,
+              metadata: { id: item.product._id },
+              ...(item.product.images?.length
+                ? { images: [urlFor(item.product.images[0]).url()] }
+                : {}),
+            },
           },
-        },
-      })) as Stripe.Checkout.SessionCreateParams.LineItem[],
+        };
+      }),
     };
 
     if (customerId) {
@@ -59,7 +62,7 @@ export async function createCheckoutSession(items: CartItem[], metadata: Metadat
     const session = await stripe.checkout.sessions.create(sessionPayload);
     return session.url;
   } catch (error) {
-    console.error("❌ Stripe Checkout error:", error);
+    console.error(" Stripe Checkout error:", error);
     throw error;
   }
 }
