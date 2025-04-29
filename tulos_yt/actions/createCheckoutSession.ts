@@ -40,14 +40,14 @@ export async function createCheckoutSession(items: CartItem[], metadata: Metadat
           currency: "usd",
           unit_amount: Math.round(item.product.price! * 100),
           product_data: {
-            name: item.product.name || "Unnamed Product", // Fixed here
+            name: item.product.name ?? "Unnamed Product", // ✅ Now TypeScript is happy
             metadata: { id: item.product._id },
-            ...(item.product.images?.length && {
-              images: [urlFor(item.product.images[0]).url()],
-            }),
+            ...(item.product.images?.length
+              ? { images: [urlFor(item.product.images[0]).url()] }
+              : {}),
           },
         },
-      })),
+      })) as Stripe.Checkout.SessionCreateParams.LineItem[],
     };
 
     if (customerId) {
