@@ -1,4 +1,4 @@
-import { currentUser } from "@clerk/nextjs/server";
+import { currentUser } from "";
 import { redirect } from "next/navigation";
 
 export const requiredUser = async () => {

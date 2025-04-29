@@ -5,7 +5,7 @@ import Container from "./Container";
 import MobileMenu from "./MobileMenu";
 import SearchBar from "./SearchBar";
 import CartIcon from "./CartIcon";
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs";
 import { getAllCategories, getMyOrders } from "@/sanity/helpers/queries";
 import ClientAuthUI from "./ClientAuthUI";
 import { headers } from "next/headers";
