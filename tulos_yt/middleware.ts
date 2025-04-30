@@ -1,5 +1,5 @@
 // middleware.ts
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware } from "@clerk/nextjs/edge";
 
 export default clerkMiddleware((auth, req) => {
   console.log(" Clerk middleware triggered on:", req.nextUrl.pathname);
