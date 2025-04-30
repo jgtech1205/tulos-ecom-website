@@ -1,11 +1,12 @@
 // middleware.ts
-import { authMiddleware } from "@clerk/nextjs";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
-export default authMiddleware();
-
+export default clerkMiddleware((auth, req) => {
+  console.log(" Clerk middleware triggered on:", req.nextUrl.pathname);
+});
 export const config = {
   matcher: [
-    "/((?!api|_next|.*\\..*).*)",
-    "/studio/:path*",
+    "/((?!api|_next|.*\\..*).*)", 
+    "/studio/:path*"
   ],
 };
