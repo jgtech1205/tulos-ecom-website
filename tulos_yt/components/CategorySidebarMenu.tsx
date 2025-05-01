@@ -38,15 +38,16 @@ const CategorySidebarMenu = ({ categories, slug }: Props) => {
     fetchProducts(currentSlug);
   }, [currentSlug]);
 
-  // Add static categories
+  // Add static categories (including "t-shirt" which matches Sanity slug)
   const staticItems = [
     { _id: "featured", slug: { current: "featured" }, title: "Featured" },
     { _id: "new", slug: { current: "new" }, title: "New" },
+    { _id: "t-shirt", slug: { current: "t-shirt" }, title: "T-shirt" },
   ];
 
   const filteredCategories = categories?.filter(
     (cat) =>
-      !["featured", "new"].includes(cat?.slug?.current?.toLowerCase() || "")
+      !["featured", "new", "t-shirt"].includes(cat?.slug?.current?.toLowerCase() || "")
   );
 
   const menuItems = [...staticItems, ...(filteredCategories || [])];
@@ -55,23 +56,27 @@ const CategorySidebarMenu = ({ categories, slug }: Props) => {
     <div className="py-5 flex flex-col md:flex-row items-start gap-5">
       {/* Category Menu */}
       <div className="flex flex-col md:min-w-40 border w-full max-w-xs">
-        {menuItems.map((item) => (
-          <Button
-            key={item?._id}
-            onClick={() => {
-              setCurrentSlug(item?.slug?.current as string);
-              router.push(`/category/${item?.slug?.current}`);
-            }}
-            className={`w-full justify-start rounded-none border-0 border-b last:border-b-0 text-left font-semibold bg-transparent
-              text-darkColor shadow-none hover:bg-darkColor/80 hover:text-white
-              ${
-                item?.slug?.current === currentSlug &&
-                "bg-darkColor text-white border-darkColor"
-              }`}
-          >
-            {item?.title}
-          </Button>
-        ))}
+        {menuItems.map((item) => {
+          const normalizedSlug = item?.slug?.current?.toLowerCase() || "";
+
+          return (
+            <Button
+              key={item?._id}
+              onClick={() => {
+                setCurrentSlug(normalizedSlug);
+                router.push(`/category/${normalizedSlug}`);
+              }}
+              className={`w-full justify-start rounded-none border-0 border-b last:border-b-0 text-left font-semibold bg-transparent
+                text-darkColor shadow-none hover:bg-darkColor/80 hover:text-white
+                ${
+                  normalizedSlug === currentSlug &&
+                  "bg-darkColor text-white border-darkColor"
+                }`}
+            >
+              {item?.title}
+            </Button>
+          );
+        })}
       </div>
 
       {/* Product Display */}
@@ -101,7 +106,10 @@ const CategorySidebarMenu = ({ categories, slug }: Props) => {
             ))}
           </div>
         ) : (
-          <NoProductsAvailable selectedTab={currentSlug} className="mt-0 w-full" />
+          <NoProductsAvailable
+            selectedTab={currentSlug}
+            className="mt-0 w-full"
+          />
         )}
       </div>
     </div>
@@ -109,3 +117,4 @@ const CategorySidebarMenu = ({ categories, slug }: Props) => {
 };
 
 export default CategorySidebarMenu;
+
