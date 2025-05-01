@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Loader2 } from "lucide-react";
 
 const ProductGrid = () => {
-  const [selectedTab, setSelectedTab] = useState(productType[0]?.value || "t-shirt");
+  const [selectedTab, setSelectedTab] = useState(productType[0]?.title || "");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -19,8 +19,9 @@ const ProductGrid = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const query = `*[_type == 'product' && references(*[_type == 'category' && slug.current == $slug]._id)] | order(name asc)`;
-        const params = { slug: selectedTab.toLowerCase() };
+        // ✅ Updated query to use productType->value
+        const query = `*[_type == "product" && productType->value == $value] | order(name asc)`;
+        const params = { value: selectedTab.toLowerCase() };
         const response = await client.fetch(query, params);
         setProducts(response);
       } catch (error) {
