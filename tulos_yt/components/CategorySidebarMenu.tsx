@@ -38,16 +38,17 @@ const CategorySidebarMenu = ({ categories, slug }: Props) => {
     fetchProducts(currentSlug);
   }, [currentSlug]);
 
-  // Add static categories (including "t-shirt" which matches Sanity slug)
+  // Static categories for buttons
   const staticItems = [
     { _id: "featured", slug: { current: "featured" }, title: "Featured" },
     { _id: "new", slug: { current: "new" }, title: "New" },
-    { _id: "t-shirt", slug: { current: "t-shirt" }, title: "T-shirt" },
+    { _id: "t-shirt", slug: { current: "t-shirt" }, title: "T-Shirt" },
   ];
 
+  // Filter Sanity categories to exclude those already handled statically
+  const staticSlugs = staticItems.map((item) => item.slug.current);
   const filteredCategories = categories?.filter(
-    (cat) =>
-      !["featured", "new", "t-shirt"].includes(cat?.slug?.current?.toLowerCase() || "")
+    (cat) => !staticSlugs.includes(cat?.slug?.current?.toLowerCase() || "")
   );
 
   const menuItems = [...staticItems, ...(filteredCategories || [])];
@@ -117,4 +118,3 @@ const CategorySidebarMenu = ({ categories, slug }: Props) => {
 };
 
 export default CategorySidebarMenu;
-
