@@ -60,4 +60,4 @@ export const faqsData = [
       "We employ industry-standard security measures and comply with all relevant data protection regulations to ensure the security of our clients' data.",
   },
 ]
-//udpated for sanity api again
+//udpated for sanity api 
