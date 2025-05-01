@@ -9,11 +9,11 @@ export const headerData = [
 ];
 
 export const productType = [
-  { title: "Tshirt", value: "tshirt" },
+  { title: "T-Shirt", value: "t-shirt" },  
   { title: "Jacket", value: "jacket" },
   { title: "Pants", value: "pants" },
   { title: "Hoodie", value: "hoodie" },
-  { title: "Short", value: "tshirt" },
+  { title: "Short", value: "short" },      
 ];
 
 export const quickLinksData = [
