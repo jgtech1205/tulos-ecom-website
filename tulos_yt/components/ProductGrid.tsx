@@ -19,8 +19,9 @@ const ProductGrid = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const query = `*[_type == 'product' && variant == $variant] | order(name asc)`;
-        const params = { variant: selectedTab.toLowerCase() };
+        // ✅ Updated query to use productType->value
+        const query = `*[_type == "product" && productType->value == $value] | order(name asc)`;
+        const params = { value: selectedTab.toLowerCase() };
         const response = await client.fetch(query, params);
         setProducts(response);
       } catch (error) {
@@ -61,6 +62,3 @@ const ProductGrid = () => {
 };
 
 export default ProductGrid;
-
-
-
