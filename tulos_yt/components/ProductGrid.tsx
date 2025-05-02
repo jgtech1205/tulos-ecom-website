@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Loader2 } from "lucide-react";
 
 const ProductGrid = () => {
-  const [selectedTab, setSelectedTab] = useState(productType[0]?.title || "");
+  const [selectedTab, setSelectedTab] = useState(productType[0]?.value || "");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -19,13 +19,12 @@ const ProductGrid = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // ✅ Updated query to use productType->value
-        const query = `*[_type == "product" && productType->value == $value] | order(name asc)`;
-        const params = { value: selectedTab.toLowerCase() };
+        const query = `*[_type == "product" && variant == $variant] | order(name asc)`;
+        const params = { variant: selectedTab };
         const response = await client.fetch(query, params);
         setProducts(response);
       } catch (error) {
-        console.error("Product fetching Error", error);
+        console.error("Product fetching error:", error);
       } finally {
         setLoading(false);
       }
@@ -48,7 +47,12 @@ const ProductGrid = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-10 w-full">
           {products.map((product: Product) => (
             <AnimatePresence key={product._id}>
-              <motion.div layout initial={{ opacity: 0.2 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <motion.div
+                layout
+                initial={{ opacity: 0.2 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
                 <ProductCard product={product} />
               </motion.div>
             </AnimatePresence>
